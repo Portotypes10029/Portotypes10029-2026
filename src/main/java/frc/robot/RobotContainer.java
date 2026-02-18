@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -119,6 +120,10 @@ public class RobotContainer {
         driverController.b()
             .onTrue(new InstantCommand(() -> shooter.stopAllMotors(), shooter));
 
+        
+        driverController.rightBumper()
+            .onTrue(new InstantCommand(() -> shooter.stagedShootButtonPress(), shooter));
+            
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
