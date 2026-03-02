@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.Timer;
+
+import java.util.prefs.BackingStoreException;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Timer;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class othershooter extends SubsystemBase {
 
     // Motors
     public final TalonFX leftShooter = new TalonFX(17);
@@ -15,44 +17,18 @@ public class ShooterSubsystem extends SubsystemBase {
     public final TalonFX frontIntake = new TalonFX(16);
 
     // Motor speeds
-    public final double SHOOTER_SPEED = 1; // only for the shooting motors 
-    //public final double SHOOTER_INTAKE_SPEED = 1.0;
-
-    public final double INTAKE_SPEED = 0.40; // speed for only the intaking (Left Trigger)
-
-    public final double FRONT_INTAKE_SHOOTER_SPEED = 0.4; // speed for intake motors when shooting (Right Trigger)
-    public final double BACK_INTAKE_SHOOTER_SPEED = 1; // speed for intake motors when shooting (Right Trigger)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public final double SHOOTER_SPEED = 1;
+    public final double SHOOTER_INTAKE_SPEED = 1.0;
+    public final double INTAKE_SPEED = 0.6;
+    public final double FRONT_INTAKE_SHOOTER_SPEED = 0.4;
+    public final double BACK_INTAKE_SHOOTER_SPEED = 1;
 
     // DutyCycleOut objects
     public final DutyCycleOut shooterSpeed = new DutyCycleOut(SHOOTER_SPEED);
     public final DutyCycleOut shooterSpeedReversed = new DutyCycleOut(-SHOOTER_SPEED);
 
-   // public final DutyCycleOut shooterIntakeSpeed = new DutyCycleOut(SHOOTER_INTAKE_SPEED);
-   // public final DutyCycleOut shooterIntakeSpeedReversed = new DutyCycleOut(-SHOOTER_INTAKE_SPEED);
+    public final DutyCycleOut shooterIntakeSpeed = new DutyCycleOut(SHOOTER_INTAKE_SPEED);
+    public final DutyCycleOut shooterIntakeSpeedReversed = new DutyCycleOut(-SHOOTER_INTAKE_SPEED);
     
     public final DutyCycleOut intakeSpeed = new DutyCycleOut(INTAKE_SPEED);
     public final DutyCycleOut intakeSpeedReversed = new DutyCycleOut(-INTAKE_SPEED);
@@ -64,10 +40,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public final DutyCycleOut backIntakeShooterSpeedReversed = new DutyCycleOut(-BACK_INTAKE_SHOOTER_SPEED);
 
     private static final DutyCycleOut STOP = new DutyCycleOut(0);
-
-    // Timer for staged shooting
-    private final Timer shootTimer = new Timer();
-    private boolean stagedShootActive = false;
 
     /** Run shooter and intake for shooting fuel */
     public void shootFuel() {
@@ -96,41 +68,37 @@ public class ShooterSubsystem extends SubsystemBase {
      * 0–2s: shooter spins, intake backwards to ramp up
      * 2–10s: intake forwards to feed balls, shooter continues
      */
+    
+   
+    private final Timer shooterTimer = new Timer();
+    private boolean shooterActive = false;
 
-     
-    public void stagedShootButtonPress() {
-        if (!stagedShootActive) {
-            shootTimer.reset();
-            shootTimer.start();
-            stagedShootActive = true;
+    public void shootersequence (){
+        if(!shooterActive){
+            shooterTimer.reset();
+            shooterTimer.start();
+            shooterActive=true;
         }
-
-        double time = shootTimer.get();
-
-        if (time < 2.0) {
-            // First 2 seconds: shooter spins, intake backwards
+        double time = shooterTimer.get();
+        if(time<2.0){
             leftShooter.setControl(shooterSpeed);
             rightShooter.setControl(shooterSpeedReversed);
             frontIntake.setControl(intakeSpeedReversed);
             backIntake.setControl(intakeSpeed);
-
-        } else if (time < 10.0) {
-            // Next 8 seconds: intake forwards, shooter continues
+        } else if(time<10){
             shootFuel();
-
-        } else {
-            // Done after 10 seconds
+        } else{
+            //stops motors if the timer is >10 sec
             stopAllMotors();
-            shootTimer.stop();
-            stagedShootActive = false;
+            shooterTimer.stop();
+            shooterActive=false;
         }
     }
-
-
-    /** Reset staged shoot timer (optional if needed before another press) */
-    public void resetStagedShoot() {
-        shootTimer.stop();
-        shootTimer.reset();
-        stagedShootActive = false;
+    public void resetTimer(){
+        shooterTimer.reset();
+        shooterTimer.stop();
+        shooterActive=false;
     }
+     
+    
 }

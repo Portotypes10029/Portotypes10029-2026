@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
+        LimelightHelpers.setupPortForwardingUSB(0);  // First camera
     }
 
     @Override
