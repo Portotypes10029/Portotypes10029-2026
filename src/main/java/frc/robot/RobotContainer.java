@@ -7,14 +7,24 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.AllTimestamps;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.AimTurretAtHub;
+import frc.robot.commands.AimTurretAtTag;
 import frc.robot.commands.DriveToTag;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -23,7 +33,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.climbSubsystem;
-
+import frc.robot.commands.AimTurretAtTag;
 
 
 public class RobotContainer {
@@ -51,11 +61,9 @@ public class RobotContainer {
 
     // Import limelight vision helpers
     private final LimelightVision vision = new LimelightVision();
+    public Field2d m_field = new Field2d();
 
-    // Cameras
-
-
-
+    // Autos
     private final Autos autos;
 
     // Driver
@@ -64,6 +72,7 @@ public class RobotContainer {
     // Operator
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
+    // auto chooser
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
@@ -74,17 +83,25 @@ public class RobotContainer {
         autos = new Autos(drivetrain, shooter, drive, turret, intake, climber, limelight);
 
         // auto chooser
-        autoChooser.setDefaultOption("Abbys auto", autos.abbysAuto());
-
-        autoChooser.addOption("right auto", autos.rightAuto());
-        autoChooser.addOption("new middle auto", autos.middleAuto());
-        autoChooser.addOption("drive and turn (complex)", autos.driveAndTurnComplex());
-        autoChooser.addOption("climb auto", autos.climbAuto());
-        autoChooser.addOption("DriveToTag12", autos.driveToTagTest());
-        autoChooser.addOption("newAndImprovedLeftAuto", autos.newAndImprovedLeftAuto());
-
+        //autoChooser.setDefaultOption("Abbys auto", autos.abbysAuto());
+        // autoChooser.addOption("right auto", autos.rightAuto());
+        //autoChooser.addOption("middle auto", autos.middleAuto());
+        //autoChooser.addOption("climb auto", autos.climbAuto());
+        // autoChooser.addOption("DriveToTag12", autos.driveToTagTest());
+        // autoChooser.addOption("LeftAuto", autos.LeftAuto());
+        // autoChooser.addOption("NewmiddleAuto", autos.NewmiddleAuto());
+        // autoChooser.addOption("Connor Middle Auto", autos.ConnorMiddleAuto());
+        // autoChooser.addOption("---------", autos.middleAuto());
+        autoChooser.setDefaultOption("[RED] Right Auto", autos.RED_RightAuto());
+        autoChooser.addOption("[RED] Middle Auto", autos.RED_MiddleAuto());
+        autoChooser.addOption("[RED] Left Auto", autos.RED_LeftAuto());
+        autoChooser.addOption("[BLUE] Right Auto", autos.BLUE_RightAuto());
+        autoChooser.addOption("[BLUE] Middle Auto", autos.BLUE_MiddleAuto());
+        autoChooser.addOption("[BLUE] Left Auto", autos.BLUE_LeftAuto());
 
         SmartDashboard.putData(autoChooser);
+        
+        SmartDashboard.putData(m_field);
 
         configureBindings();
     }
@@ -99,48 +116,198 @@ public class RobotContainer {
                     .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+        operatorController.povLeft().onTrue(Commands.run(() -> turret.turnTurretLeft(0.3), turret));
+        operatorController.povRight().onTrue(Commands.run(() -> turret.turnTurretRight(0.3), turret));
+
+        // turret.setDefaultCommand(
+        //     new RunCommand(() -> {
+        //         // int pov = operatorController.getPOV();
+        //         // if (pov == 90) {
+        //         //     turret.turnTurretLeft(0.3);
+        //         // }
+        //         // if (pov == 180){
+        //         //     turret.turnTurretRight(0.3);
+        //         // }
+        //         // operatorController.povLeft().onTrue(Commands.run(() -> turret.turnTurretLeft(0.3), turret));
+        //         }, turret
+        //     )
+        // );
+
+    
 
         // shooter.setDefaultCommand(Commands.run(() -> shooter.shootFuel(runFeeder, runShooter), shooter));
     
 
-        // Right Trigger - Shoot Fuel
-        //operatorController.rightTrigger()
-        //    .whileTrue(new RunCommand(() -> shooter.shootFuel(), shooter));
+        // driverController.pov(90)
+        //     .whileTrue(
+        //         new RunCommand(() -> turret.turnTurretRight(0.1), turret)
+        //     )
+        //     .whileFalse(
+        //         new RunCommand(() -> turret.stopTurret())
+        //     );
 
-        // operatorController.rightTrigger()
-        //     .whileTrue(new ParallelCommandGroup(
-        //         Commands.runEnd(()-> runFeeder = true, () -> runFeeder = false),
-        //         Commands.runEnd(() -> runShooter = true, () -> runShooter = false),
-        //         Commands.runEnd(()-> shooter.frontIntakeSpeed(), () -> shooter.stopShooter()),
-        //         Commands.runEnd(() -> shooter.backIntakeSpeed(), () -> shooter.stopShooter())
+
+        // driverController.pov(270)
+        //     .whileTrue(
+        //         new RunCommand(() -> turret.turnTurretLeft(0.1), turret)
+        //     )
+        //     .whileFalse(
+        //         new RunCommand(() -> turret.stopTurret())
+        //     );
+
+
+
+        // new POVButton(driverController, 180)
+        //     .whileTrue(new RunCommand(
+        //         Commands.runEnd(()->turret.turnTurretRight(0.05), ()->turret.stopTurret())
         //     ));
 
+        //Right Trigger - Shoot Fuel
+        driverController.rightTrigger()
+            .whileTrue(new ParallelCommandGroup(
+                Commands.runEnd(()-> intake.raiseIntake(), () -> intake.stopIntake())
+            ));
 
-        // Left Trigger - Intake Fuel
-        // operatorController.leftTrigger()
-        //     .whileTrue(new RunCommand(() -> shooter.intakeFuel(), 
-        //     shooter));
-        
+        driverController.leftTrigger()
+            .whileTrue(new ParallelCommandGroup(
+                Commands.runEnd(()-> intake.lowerIntake(), () -> intake.stopIntake())
+            ));
 
-        driverController.x()
-        .onTrue(new RunCommand(()-> intake.runIntake()));
 
-        driverController.y()
-        .onTrue(new RunCommand(()-> intake.reverseIntake()));
-        
-        driverController.b()
-        .onTrue(new RunCommand(()-> intake.stopIntake()));
 
-        // B Button - Stop all shooter motors
-        // operatorController.b()
-        //     .onTrue(new InstantCommand(() -> shooter.stopAllMotors()));
 
-        // operatorController.x()
-        //     .whileTrue(
-        //         Commands.runEnd(() -> shootVel = 0.0, () -> shootVel = 0.5)
+
+
+        // //Left Trigger - Intake Fuel
+        // driverController.rightBumper()
+        //     .whileTrue(new ParallelCommandGroup(
+        //         Commands.runEnd(()-> turret.runTurretIntake(), () -> turret.stopTurretIntake()))
         //     );
- 
         
+
+        // driverController.x()
+        //     .whileTrue(new ParallelCommandGroup(
+        //         Commands.runEnd(()-> intake.reverseFrontIntake(), () -> intake.stopFrontIntake())
+        //     ));
+
+        // driverController.y()
+        //     .whileTrue(new ParallelCommandGroup(
+        //         Commands.runEnd(()-> intake.raiseIntake(), () -> intake.stopIntake())
+        //     ));   
+
+        // driverController.b()
+        //     .whileTrue(new ParallelCommandGroup(
+        //         Commands.runEnd(()-> intake.runFrontInake(), () -> intake.stopFrontIntake())
+        //     ));
+
+        // //B Button - Stop all shooter motors
+        // driverController.a()
+        //     .whileTrue(new ParallelCommandGroup(
+        //         Commands.runEnd(()-> intake.lowerIntake(), () -> intake.stopIntake())
+        //     ));
+
+ 
+
+        // OPERATOR CONTROLLER BINDINGS
+
+        // operatorController.a()
+        //     .onTrue(new AimTurretAtHub(turret, limelight, "limelight"));
+
+        // raise/lower front intake
+        // drive
+
+
+        
+
+        // shoot
+        // intake into turret
+        // run front intake
+        // turn turret
+        
+
+        
+
+        operatorController.a()
+                .onTrue(new StartEndCommand(
+                    () -> turret.turnTurretRight(0.05),
+                    () -> turret.stopTurret(),
+                    turret));
+
+        operatorController.x()
+                .onTrue(new StartEndCommand(
+                    () -> turret.turnTurretLeft(0.05),
+                    () -> turret.stopTurret(),
+                    turret));
+
+
+
+
+        operatorController.b()
+            .onTrue(new StartEndCommand(
+                    () -> intake.runFrontIntake(),
+                    () -> intake.stopFrontIntake(),
+                    turret));
+
+        operatorController.y()
+            .whileTrue(new ParallelCommandGroup(
+                Commands.runEnd(()-> turret.runTurret(), () -> turret.stopShooting()),
+                Commands.runEnd(()-> turret.runTurretIntake(), () -> turret.stopTurretIntake())
+            ));
+
+        operatorController.rightBumper()
+            .onTrue(new StartEndCommand(
+                ()-> turret.reverseTurretIntake(), 
+                ()-> turret.stopTurretIntake(),
+                turret));
+
+
+
+
+
+        //     .onTrue(new InstantCommand(()-> intake.runFrontInake, turret));
+
+        // operatorController.b()
+        //     .onTrue(new InstantCommand(()-> turret.stop(-1), turret));
+
+        // new JoystickButton(operatorController, 6) // RB / R1
+        //     .onTrue(new InstantCommand(()-> turret.stopTurret(), turret));
+
+
+
+
+    //     new JoystickButton(operatorController,5) // LB / L1
+    //         .onTrue(Commands.print("LB/L1"));
+
+    //    new JoystickButton(operatorController, 7) // Button 7
+    //         .onTrue(Commands.print("button 7"));
+
+    //    new JoystickButton(operatorController, 8) // LT / L2
+    //         .onTrue(Commands.print("LT/L2"));
+
+
+
+
+
+
+        // operatorController.pov(90)
+        //     .whileTrue(
+        //         new RunCommand(() -> turret.turnTurretRight(0.1), turret)
+        //     )
+        //     .whileFalse(
+        //         new RunCommand(() -> turret.stopTurret())
+        //     );
+
+
+        // operatorController.pov(270)
+        //     .whileTrue(
+        //         new RunCommand(() -> turret.turnTurretLeft(0.1), turret)
+        //     )
+        //     .whileFalse(
+        //         new RunCommand(() -> turret.stopTurret())
+        //     );
+        
+
+
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -148,7 +315,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
         
-        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        //driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         //driverController.y().whileTrue(drivetrain.applyRequest(() ->
         //    point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
         //));
@@ -203,7 +370,7 @@ public class RobotContainer {
     */ 
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();  // rightAuto | leftAuto | middleAuto
+        return autoChooser.getSelected();
 
     }
 }

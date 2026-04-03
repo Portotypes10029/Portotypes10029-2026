@@ -84,110 +84,33 @@ public class Autos {
 
 
 
-
-
-
-    public Command driveAndTurnComplex() {
-        boolean isRedAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+    public Command LeftAuto() {
         final var idle = new SwerveRequest.Idle();
 
-        double driveMultiplier = isRedAlliance ? -1.0 : 1.0;
-
-        double firstTurn = isRedAlliance ? -90 : -90;
-        double secondTurn = isRedAlliance ? 90 : 90;
-        double thirdTurn = isRedAlliance ? 0 : 180; 
-
-        return new SequentialCommandGroup(
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-
-            drivetrain.applyRequest(() -> drive
-                .withVelocityX(1 * driveMultiplier)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-            ).withTimeout(4.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> turnToAngle
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withTargetDirection(Rotation2d.fromDegrees(firstTurn))
-            ).withTimeout(1.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> drive
-                .withVelocityX(1 * driveMultiplier)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-            ).withTimeout(3.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> turnToAngle
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withTargetDirection(Rotation2d.fromDegrees(secondTurn))
-            ).withTimeout(1.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1 * driveMultiplier)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-            ).withTimeout(3.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> turnToAngle
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withTargetDirection(Rotation2d.fromDegrees(thirdTurn))
-            ).withTimeout(1.5),
-
-            drivetrain.applyRequest(() -> idle).withTimeout(0.2),
-
-            drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1 * driveMultiplier)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-            ).withTimeout(7),
-
-            drivetrain.applyRequest(() -> idle)
-        );
-    }
-
-
-
-    public Command newAndImprovedLeftAuto() {
-
         return new SequentialCommandGroup(
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1)
+                .withVelocityX(-2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
             ).withTimeout(1),
-           
-            new RunCommand(()-> turret.runTurret()).withTimeout(4),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(7),
+            ).withTimeout(3.60),
 
             drivetrain.applyRequest(() -> turnToAngle
                 .withVelocityX(0)
                 .withVelocityY(0)
-                .withTargetDirection(Rotation2d.fromDegrees(90))
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
             ).withTimeout(1.5),
          
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(3),
+            ).withTimeout(2),
 
              drivetrain.applyRequest(() -> turnToAngle
                 .withVelocityX(0)
@@ -196,10 +119,10 @@ public class Autos {
             ).withTimeout(1.5),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(3),
+            ).withTimeout(2),
 
              drivetrain.applyRequest(() -> turnToAngle
                 .withVelocityX(0)
@@ -208,10 +131,10 @@ public class Autos {
             ).withTimeout(1.5),
 
              drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(6),
+            ).withTimeout(3),
 
               drivetrain.applyRequest(() -> turnToAngle
                 .withVelocityX(0)
@@ -231,10 +154,10 @@ public class Autos {
             drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1)
+                .withVelocityX(-2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(2),
+            ).withTimeout(1),
 
             Commands.runOnce(() -> turret.runTurret()),
 
@@ -242,27 +165,80 @@ public class Autos {
 
             drivetrain.applyRequest(() -> drive
                 .withVelocityX(0)
-                .withVelocityY(1)
+                .withVelocityY(2)
                 .withRotationalRate(0)
             ).withTimeout(2),
 
 
-            Commands.runOnce(() -> intake.runIntake()),
+            Commands.runOnce(() -> intake.runFrontIntake()),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1)
-                .withVelocityY(0)
-                .withRotationalRate(0)
-            ).withTimeout(1.25),
-
-
-            drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(-2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
             ).withTimeout(1),
 
+
+        
+
             Commands.runOnce(() -> turret.runTurret())
+
+        );
+    }
+    
+    public Command NewmiddleAuto() {
+        return new SequentialCommandGroup(
+            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+                drivetrain.applyRequest(()-> drive
+                    .withVelocityX(-2)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+                ).withTimeout(1),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(0)
+                    .withVelocityY(2)
+                    .withRotationalRate(0)  
+                ).withTimeout(1.20),
+                
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-2)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+                ).withTimeout(1.25)
+
+            
+        );
+    }
+        
+    public Command ConnorMiddleAuto() {
+        final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+                drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-2)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+                ).withTimeout(.5),
+                
+                drivetrain.applyRequest(()-> idle).withTimeout(.1),
+
+                Commands.runOnce(() -> turret.runTurret()).withTimeout(8),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-2)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+                ).withTimeout(1),
+                
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-2)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+                ).withTimeout(1)
+
 
         );
     }
@@ -274,10 +250,10 @@ public class Autos {
             drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1)
+                .withVelocityX(-2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(1.50),
+            ).withTimeout(1.25),
 
             drivetrain.applyRequest(() -> idle).withTimeout(2),
 
@@ -285,18 +261,18 @@ public class Autos {
 
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(-1)
+                .withVelocityX(-2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(1.75),
+            ).withTimeout(1.25),
 
             drivetrain.applyRequest(() -> idle).withTimeout(2),
 
             drivetrain.applyRequest(() -> drive
-                .withVelocityX(1)
+                .withVelocityX(2)
                 .withVelocityY(0)
                 .withRotationalRate(0)
-            ).withTimeout(1.50)
+            ).withTimeout(1.25)
             
 
 
@@ -430,13 +406,448 @@ public class Autos {
             // ).withTimeout(1)
 
 
+        );
+
+    }
 
 
 
 
+
+    // Alliance Specific Auto Routines
+
+    
+    public Command RED_RightAuto() {
+        final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(-3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(0.2),
+            
+            drivetrain.applyRequest(() -> idle).withTimeout(2),
+            Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(1.5),
+
+            drivetrain.applyRequest(()-> drive
+                .withVelocityY(3)
+                .withVelocityX(0)
+            ).withTimeout(.7) , 
+
+            
+       
+            //stopping to get balls from human players
+
+            drivetrain.applyRequest(() -> idle).withTimeout(3),
+        
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(0))
+            ).withTimeout(1.5),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(.5),
+
+            drivetrain.applyRequest(() -> idle).withTimeout(2),
+            Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(2),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1),
+           
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(180))
+            ).withTimeout(1),
+           
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(2)
+            );
+    }
+
+    // Middle red side
+    public Command RED_MiddleAuto() {
+
+        final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+
+                drivetrain.applyRequest(()-> drive
+                    .withVelocityX(-3)
+                ).withTimeout(0.4),
+
+
+                // stops robot to sit still
+                drivetrain.applyRequest(()-> idle).withTimeout(1),
+
+                Commands.run(()-> turret.runTurret()).withTimeout(3),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(0)
+                    .withVelocityY(3)
+                ).withTimeout(0.8),
+                
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-3)
+                    .withVelocityY(0)
+                ).withTimeout(0.5),
+                
+                //stops robot to intake
+
+                drivetrain.applyRequest(()-> idle).withTimeout(0.2),
+                Commands.run(()-> intake.runFrontIntake()).withTimeout(1.50),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(3)
+                    .withVelocityY(0)
+                ).withTimeout(0.4),
+        
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(0)
+                    .withVelocityY(-3)
+                ).withTimeout(0.8),
+
+                
+                drivetrain.applyRequest(()-> drive
+                    .withVelocityX(3)
+                    .withVelocityY(0)
+                ).withTimeout(0.7)
 
 
         );
 
     }
+
+
+    public Command RED_LeftAuto() {
+        final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+            // drivetrain.applyRequest(() -> drive
+            //     .withVelocityX(-3)
+            //     .withVelocityY(0)
+            //     .withRotationalRate(0)
+            // ).withTimeout(0.5),
+          
+            // drivetrain.applyRequest(() -> idle).withTimeout(2),
+            // Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+            Commands.runOnce(()-> intake.lowerIntake()
+            ).withTimeout(1),
+            
+            Commands.run(()-> intake.runFrontIntake(), intake),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1),
+         
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(.50),
+
+             drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(.50),
+            
+            Commands.run(()-> intake.stopFrontIntake(), intake),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(180))
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(1)
+        );
+    }
+
+
+    public Command BLUE_RightAuto() {
+
+    final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(-3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(0.2),
+            
+            drivetrain.applyRequest(() -> idle).withTimeout(2),
+            Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1.5),
+
+            drivetrain.applyRequest(()-> drive
+                .withVelocityY(3)
+                .withVelocityX(0)
+            ).withTimeout(.7), 
+
+            //stopping to get balls from human players
+
+            drivetrain.applyRequest(() -> idle).withTimeout(3),
+        
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(180))
+            ).withTimeout(1.5),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(.5),
+
+            drivetrain.applyRequest(() -> idle).withTimeout(2),
+            Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(2),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(1),
+           
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(0))
+            ).withTimeout(1),
+           
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(3)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(2)
+        );
+
+    }  
+
+
+    public Command BLUE_MiddleAuto() {
+        
+            final var idle = new SwerveRequest.Idle();
+            
+            return new SequentialCommandGroup(
+            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+
+                drivetrain.applyRequest(()-> drive
+                    .withVelocityX(-3)
+                ).withTimeout(0.4),
+
+
+                // stops robot to sit still
+                drivetrain.applyRequest(()-> idle).withTimeout(0.2),
+
+                Commands.run(()-> turret.runTurret()).withTimeout(3),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(0)
+                    .withVelocityY(3)
+                ).withTimeout(0.8),
+                
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-3)
+                    .withVelocityY(0)
+                ).withTimeout(0.5),
+                
+                //stops robot to intake
+
+                drivetrain.applyRequest(()-> idle).withTimeout(0.2),
+                Commands.run(()-> intake.runFrontIntake()).withTimeout(1.50),
+
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(3)
+                    .withVelocityY(0)
+                ).withTimeout(0.4),
+        
+                drivetrain.applyRequest(() -> drive
+                    .withVelocityX(0)
+                    .withVelocityY(-3)
+                ).withTimeout(0.8),
+
+                
+                drivetrain.applyRequest(()-> drive
+                    .withVelocityX(3)
+                    .withVelocityY(0)
+                ).withTimeout(0.6)
+        );
+    }
+
+
+    public Command BLUE_LeftAuto() {
+    
+        final var idle = new SwerveRequest.Idle();
+
+        return new SequentialCommandGroup(
+            // drivetrain.applyRequest(() -> drive
+            //     .withVelocityX(-2)
+            //     .withVelocityY(0)
+            //     .withRotationalRate(0)
+            // ).withTimeout(1),
+            
+            // drivetrain.applyRequest(() -> idle).withTimeout(2),
+            // Commands.runOnce(() -> turret.runTurret()).withTimeout(3),
+
+            Commands.runOnce(()-> intake.lowerIntake()
+            ).withTimeout(1),
+            
+            Commands.run(()-> intake.runFrontIntake(), intake),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1.5),
+
+            drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(90))
+            ).withTimeout(.90),
+
+
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+             
+            Commands.run(()-> intake.stopFrontIntake(), intake),
+
+             drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1),
+
+            drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(1),
+
+             drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(0))
+            ).withTimeout(1),
+
+             drivetrain.applyRequest(() -> drive
+                .withVelocityX(2)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+            ).withTimeout(2.25),
+
+              drivetrain.applyRequest(() -> turnToAngle
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withTargetDirection(Rotation2d.fromDegrees(-90))
+            ).withTimeout(1.5)
+        );
+    }
+
+
+
+
 }
