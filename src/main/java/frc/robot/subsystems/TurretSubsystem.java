@@ -43,7 +43,6 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     // get turret encoder and turret angle
-
     public double getTurretDegrees() {
         return (turretEncoder.getPosition() / GEAR_RATIO) * 360.0;
     }
@@ -52,7 +51,6 @@ public class TurretSubsystem extends SubsystemBase {
         turretEncoder.setPosition(0);
     }
 
-    // ── Cardinal Snap ─────────────────────────────────────────────────────────
 
     /**
      * Returns the nearest cardinal angle (multiple of 90) to the current position.

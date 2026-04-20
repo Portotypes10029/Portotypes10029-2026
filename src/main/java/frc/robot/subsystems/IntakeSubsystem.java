@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public final SparkMax IntakeMotor = new SparkMax(11, MotorType.kBrushless);
     public final double IntakeSpeed = 0.3;
 
-    public final TalonFX conveyorBelt = new TalonFX(19);
+    //public final TalonFX conveyorBelt = new TalonFX(19);
     private final double conveyorSpeed = 0.25;
 
     private final TalonFX frontIntakeMotor = new TalonFX(29);
@@ -54,20 +54,20 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
 
-    public void runConveyor(){
-        DutyCycleOut output = new DutyCycleOut(conveyorSpeed);
-        conveyorBelt.setControl(output);
-    }
+    // public void runConveyor(){
+    //     DutyCycleOut output = new DutyCycleOut(conveyorSpeed);
+    //     conveyorBelt.setControl(output);
+    // }
     
-    public void reverseConveyor(){
-        DutyCycleOut output = new DutyCycleOut(-conveyorSpeed);
-        conveyorBelt.setControl(output);
-    }
+    // public void reverseConveyor(){
+    //     DutyCycleOut output = new DutyCycleOut(-conveyorSpeed);
+    //     conveyorBelt.setControl(output);
+    // }
 
-    public void stopConveyor(){
-        DutyCycleOut output = new DutyCycleOut(0);
-        conveyorBelt.setControl(output);
-    }
+    // public void stopConveyor(){
+    //     DutyCycleOut output = new DutyCycleOut(0);
+    //     conveyorBelt.setControl(output);
+    // }
 
 
 
